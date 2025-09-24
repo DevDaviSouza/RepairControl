@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                // Versão do JavaScript que será gerada
+    "module": "CommonJS",               // Sistema de módulos a ser usado (padrão do Node.js)
+    "outDir": "./dist",                 // Pasta onde o JavaScript compilado será salvo
+    "rootDir": "./src",                 // Pasta onde está o seu código TypeScript
+    "strict": true,                     // Habilita todas as checagens estritas de tipos
+    "esModuleInterop": true,            // Permite compatibilidade entre módulos CommonJS e ES Modules
+    "skipLibCheck": true,               // Pula a verificação de tipos dos arquivos de declaração (.d.ts)
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"],                   // Quais pastas devem ser incluídas na compilação
+  "exclude": ["node_modules"]           // Quais pastas devem ser ignoradas
+}
