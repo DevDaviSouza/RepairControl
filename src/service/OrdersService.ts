@@ -1,8 +1,11 @@
-import db from "../models/db"
+import { PrismaClient } from "@prisma/client"
 
-const findAllOrders = async () => {
-  return await db.orders.findAll();
+const prisma = new PrismaClient()
+
+const findAll = async () => {
+  return await prisma.orders.findMany()
 }
 
-
-export default findAllOrders;
+export {
+  findAll
+}

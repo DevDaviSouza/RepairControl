@@ -10,4 +10,12 @@ endpoints.get("/customers", async (req: Request, resp: Response) => {
   resp.send(r)
 })
 
+endpoints.get("/customers/:id", async (req: Request, resp: Response) => {
+  const id = req.params.id
+
+  const r = await findOne(Number(id))
+
+  resp.send(r)
+})
+
 export default endpoints;

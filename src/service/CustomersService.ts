@@ -7,7 +7,7 @@ const findAll = async () => {
 }
 
 const findOne = async (id: number) => {
-   await prisma.customers.findUnique({where: {
+   return await prisma.customers.findUnique({where: {
     customers_id: id
   }})
 }
