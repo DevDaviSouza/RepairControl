@@ -1,12 +1,12 @@
-import { Request, Response, Router } from "express";
-import db from "../models/db";
+// import { Request, Response, Router } from "express";
+// import db from "../models/db";
 
-const endpoints = Router();
+// const endpoints = Router();
 
-endpoints.get("/enterprises", async (req: Request, resp: Response) => {
-  let r = await db.enterprises.findAll()
+// endpoints.get("/enterprises", async (req: Request, resp: Response) => {
+//   let r = await db.enterprises.findAll()
 
-  resp.send(r)
-})
+//   resp.send(r)
+// })
 
-export default endpoints;
+// export default endpoints;

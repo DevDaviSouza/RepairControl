@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+model priority {
+  priority_id     Int     @id   @default(autoincrement())
+  ds_priority     String  @unique
+  orders  orders[]
+}
+
+model customers {
+  customers_id    Int     @id   @default(autoincrement())
+  nm_customer     String  
+  ds_phone        String  @db.VarChar(19)
+  ds_mail         String  @unique
+  nm_cpf          String  @unique @db.VarChar(14)
+  orders    orders[]
+}
+
+model enterprises {
+  enterprise_id   Int     @id   @default(autoincrement())
+  nm_enterprise   String  
+  ep_fantasy      String
+  ep_cnpj         String  @unique @db.VarChar(19)
+  users           users[]
+  orders          orders[]
+}
+
+model users {
+  user_id         Int     @id    @default(autoincrement())
+  nm_user         String
+  ds_email        String
+  ds_senha        String
+  enterprise   enterprises   @relation(fields: [enterprise_id], references: [enterprise_id])
+  enterprise_id   Int
+}
+
+model orders {
+  order_id      Int       @id   @default(autoincrement())
+  customer    customers       @relation(fields: [customer_id], references: [customers_id])
+  customer_id   Int
+  ds_model      String
+  ds_color      String
+  dt_year       Int?
+  ds_plate      String @db.VarChar(7)
+  qtd_repair    Int?
+  qtd_painting  Int?
+  dt_order      DateTime
+  dt_completion DateTime?
+  dt_delivered  DateTime?
+  bt_delivered  Boolean
+  ds_services   String?
+  priority      priority    @relation(fields: [priority_id], references: [priority_id])
+  priority_id   Int
+  vl_total      Decimal
+  enterprise    enterprises @relation(fields: [enterprise_id], references: [enterprise_id])
+  enterprise_id Int
+  payments      payments[]
+}
+
+model payments {
+  payment_id      Int       @id   @default(autoincrement())
+  order           orders    @relation(fields: [order_id], references: [order_id])
+  order_id        Int
+  vl_total        Decimal
+  vl_payment      Decimal
+  vl_reamining    Decimal
+  ds_payment      String
+}

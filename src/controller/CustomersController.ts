@@ -1,11 +1,11 @@
 import { Request, Response, Router } from "express";
-import db from "../models/db";
+import { findAll, findOne } from "../service/CustomersService";
 
 const endpoints = Router();
 
 endpoints.get("/customers", async (req: Request, resp: Response) => {
   
-  let r = await db.customers.findAll();
+  const r = await findAll()
   
   resp.send(r)
 })
