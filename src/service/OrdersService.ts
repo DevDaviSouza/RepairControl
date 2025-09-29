@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 const findAll = async () => {
   return await prisma.orders.findMany()
 }
-
+ 
 export {
   findAll
 }

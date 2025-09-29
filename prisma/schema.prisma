@@ -7,11 +7,18 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
+enum priority_level {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model priority {
   priority_id     Int     @id   @default(autoincrement())
-  ds_priority     String  @unique
+  ds_priority     priority_level @default(LOW)
   orders  orders[]
 }
+
 
 model customers {
   customers_id    Int     @id   @default(autoincrement())
@@ -50,7 +57,7 @@ model orders {
   ds_plate      String @db.VarChar(7)
   qtd_repair    Int?
   qtd_painting  Int?
-  dt_order      DateTime
+  dt_order      DateTime @default(now())
   dt_completion DateTime?
   dt_delivered  DateTime?
   bt_delivered  Boolean
