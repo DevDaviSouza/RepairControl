@@ -4,78 +4,95 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
-enum priority_level {
-  LOW
-  MEDIUM
-  HIGH
+enum priority_enum {
+  BAIXA
+  MEDIA
+  ALTA
 }
 
 model priority {
-  priority_id     Int     @id   @default(autoincrement())
-  ds_priority     priority_level @default(LOW)
-  orders  orders[]
+  priority_id Int      @id @default(autoincrement())
+  ds_priority priority_enum
+  orders      orders[]
 }
 
-
 model customers {
-  customers_id    Int     @id   @default(autoincrement())
-  nm_customer     String  
-  ds_phone        String  @db.VarChar(19)
-  ds_mail         String  @unique
-  nm_cpf          String  @unique @db.VarChar(14)
-  orders    orders[]
+  customers_id Int      @id @default(autoincrement())
+  nm_customer  String?
+  ds_phone     String?  @db.VarChar(19)
+  ds_mail      String?
+  nm_cpf       String?  @db.VarChar(14)
+  orders       orders[]
 }
 
 model enterprises {
-  enterprise_id   Int     @id   @default(autoincrement())
-  nm_enterprise   String  
-  ep_fantasy      String
-  ep_cnpj         String  @unique @db.VarChar(19)
-  users           users[]
-  orders          orders[]
+  enterprise_id Int      @id @default(autoincrement())
+  nm_enterprise String?  @db.VarChar(200)
+  ep_fantasy    String?  @db.VarChar(200)
+  ep_cnpj       String?  @db.VarChar(19)
+  orders        orders[]
+  users         users[]
 }
 
 model users {
-  user_id         Int     @id    @default(autoincrement())
-  nm_user         String
-  ds_email        String
-  ds_senha        String
-  enterprise   enterprises   @relation(fields: [enterprise_id], references: [enterprise_id])
-  enterprise_id   Int
+  user_id       Int          @id @default(autoincrement())
+  nm_user       String?
+  ds_email      String?
+  ds_senha      String?
+  enterprise_id Int?
+  enterprise    enterprises? @relation(fields: [enterprise_id], references: [enterprise_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model orders {
-  order_id      Int       @id   @default(autoincrement())
-  customer    customers       @relation(fields: [customer_id], references: [customers_id])
-  customer_id   Int
-  ds_model      String
-  ds_color      String
+  order_id      Int          @id @default(autoincrement())
+  customer_id   Int?
+  ds_model      String?
+  ds_color      String?
   dt_year       Int?
-  ds_plate      String @db.VarChar(7)
+  ds_plate      String?      @db.VarChar(7)
   qtd_repair    Int?
   qtd_painting  Int?
-  dt_order      DateTime @default(now())
-  dt_completion DateTime?
-  dt_delivered  DateTime?
-  bt_delivered  Boolean
+  dt_order      DateTime?    @db.Timestamp(6)
+  dt_completion DateTime?    @db.Timestamp(6)
+  dt_delivered  DateTime?    @db.Timestamp(6)
+  bt_delivered  Boolean?
   ds_services   String?
-  priority      priority    @relation(fields: [priority_id], references: [priority_id])
-  priority_id   Int
-  vl_total      Decimal
-  enterprise    enterprises @relation(fields: [enterprise_id], references: [enterprise_id])
-  enterprise_id Int
+  status_id     Int?
+  status        statusOrder? @relation(fields: [status_id], references: [status_id], onDelete: NoAction, onUpdate: NoAction)
+  priority_id   Int?
+  vl_total      Decimal?     @db.Decimal
+  enterprise_id Int?
+  customer      customers?   @relation(fields: [customer_id], references: [customers_id], onDelete: NoAction, onUpdate: NoAction)
+  enterprise    enterprises? @relation(fields: [enterprise_id], references: [enterprise_id], onDelete: NoAction, onUpdate: NoAction)
+  priority      priority?    @relation(fields: [priority_id], references: [priority_id], onDelete: NoAction, onUpdate: NoAction)
   payments      payments[]
 }
 
 model payments {
-  payment_id      Int       @id   @default(autoincrement())
-  order           orders    @relation(fields: [order_id], references: [order_id])
-  order_id        Int
-  vl_total        Decimal
-  vl_payment      Decimal
-  vl_reamining    Decimal
-  ds_payment      String
+  payment_id   Int      @id @default(autoincrement())
+  order_id     Int?
+  vl_total     Decimal? @db.Decimal
+  vl_payment   Decimal? @db.Decimal
+  vl_reamining Decimal? @db.Decimal
+  ds_payment   String?
+  order        orders?  @relation(fields: [order_id], references: [order_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+enum statusOrder_enum {
+  RECEBIDO
+  ORCAMENTO
+  APROVADO
+  ANDAMENTO
+  AGUARDANDO_PECA
+  FINALIZADO
+  ENTREGUE
+}
+
+model statusOrder {
+  status_id   Int     @id @default(autoincrement())
+  ds_status   statusOrder_enum
+  orders      orders[]
 }

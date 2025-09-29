@@ -3,6 +3,7 @@ import { createCustomer, deleteCustomer, findAllCustomers, findCustomerForId, up
 
 const endpoints = Router();
 
+
 endpoints.get("/customers", async (req: Request, resp: Response) => {
   
   const {page, limit} = req.query

@@ -7,8 +7,8 @@ const prisma = new PrismaClient()
 
 const findAllCustomers = async (page: any, limit: any) => {
   const pagination = convertPagination(page, limit)
-  
-  validPagination(Number(page), Number(limit))
+
+  validPagination(pagination.page, pagination.limit )
   
   const items = await prisma.customers.findMany(
     {
