@@ -37,23 +37,60 @@ const findOrderForId = async (id: number) => {
   return searchOrder
 }
 
-// const findDelayedOrders = async () => {
-//   const today = new Date()
+const findDelayedOrders = async (page: any, limit: any) => {
+  const today = new Date()
+
+  const pagination = convertPagination(page, limit)
+  validPagination(pagination.page, pagination.limit)
   
-//   const orders = await prisma.orders.findMany({
-//     where: {
-//       dt_completion: {
-//         lt: today
-//       },
-//       : {
-//         not: 'COMPLETED'
-//       }
-//     }
-//   })
-//   return orders
-// }
+  const orders = await prisma.orders.findMany({
+    where: {
+      AND: [
+        {
+          dt_completion: { lt: today },
+        },
+        { OR: [
+          {status_id: {not : 7 }},
+          {status_id: {not : 6 }}
+          ]
+       }
+      ] 
+    },
+    skip: pagination.page,
+    take: pagination.limit,
+    orderBy: {
+      dt_order: 'desc'
+    },
+})
+
+  const totalItems = await prisma.orders.count({
+    where: {
+      AND: [
+        {
+          dt_completion: { lt: today },
+        },
+        { OR: [
+          {status_id: {not : 7 }},
+          {status_id: {not : 6 }}
+          ]
+       }
+      ] 
+    },
+    skip: pagination.page,
+    take: pagination.limit,
+    orderBy: {
+      dt_order: 'desc'
+    }
+  })
+
+  return {
+    items: orders,
+    totalItems
+  }
+}
 
 export {
   findAllOrders,
-  findOrderForId
+  findOrderForId,
+  findDelayedOrders
 }

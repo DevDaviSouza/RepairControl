@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client"
-import { validData } from "../validation/customers/validData"
 import { validPagination } from "../validation/customers/validPagination"
 import { convertPagination } from "../util/convertPagination"
 
@@ -37,8 +36,6 @@ const findCustomerForId = async (id: number) => {
 
 const createCustomer = async (customer: any) => {
 
-  validData(customer)
-
   const existsCustomerVerify = await prisma.customers.findFirst({
     where: {
        nm_cpf: customer.cpf
@@ -63,15 +60,13 @@ const createCustomer = async (customer: any) => {
 
 const updateCustomer = async (id: number, customer: any) => {
 
-    validData(customer)
-
     const existsCustomerVerify = await prisma.customers.findFirst({
       where: {
         nm_cpf: customer.cpf
       }
     })
 
-    if(existsCustomerVerify) throw new Error("Cliente já cadastrado")
+    if(!existsCustomerVerify) throw new Error("Cliente inexistente!")
     
     await prisma.customers.update({
       where: {

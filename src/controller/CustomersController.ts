@@ -1,8 +1,15 @@
 import { Request, Response, Router } from "express";
 import { createCustomer, deleteCustomer, findAllCustomers, findCustomerForId, updateCustomer } from "../service/CustomersService";
+import z from "zod";
 
 const endpoints = Router();
 
+const customerSchema = z.object({
+  name: z.string().min(3),
+  phone: z.string().min(8).max(19),
+  email: z.email(),
+  cpf: z.string().min(11).max(14)
+})
 
 endpoints.get("/customers", async (req: Request, resp: Response) => {
   
@@ -31,7 +38,9 @@ endpoints.post("/customers", async (req: Request, resp: Response) => {
     cpf: customer.cpf
   }
 
-  const r = await createCustomer(newUser)
+  const dataParsed = customerSchema.parse(newUser)
+
+  const r = await createCustomer(dataParsed)
 
   resp.send(r)
 })
@@ -46,7 +55,10 @@ endpoints.put("/customers/:id", async (req: Request, resp: Response) => {
     email: customer.email,
     cpf: customer.cpf
   }
-  const r = await updateCustomer(Number(id), dataCustomer)
+
+  const dataParsed = customerSchema.parse(dataCustomer)
+  
+  const r = await updateCustomer(Number(id), dataParsed)
   resp.send(r)
 })
 
