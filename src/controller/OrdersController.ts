@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { findAllOrders, findDelayedOrders, findOrderForId } from "../service/OrdersService";
+import { findAllOrders, findDelayedOrders, findDelayedOrdersCount, findOrderForId, findPendingPainting, findProxLate } from "../service/OrdersService";
 
 const endpoints = Router();
 
@@ -20,6 +20,27 @@ endpoints.get("/orders/late", async (req: Request, resp: Response) => {
   resp.send(r)
 })
 
+endpoints.get("/orders/late/count", async (req: Request, resp: Response) => {
+  const r = await findDelayedOrdersCount()
+
+  resp.send({
+    total: r
+  })
+})
+
+
+endpoints.get("/orders/pendingPainting", async (req: Request, resp: Response) => {
+  const r = await findPendingPainting()
+  
+  resp.send(r)
+})
+
+endpoints.get("/orders/proxLate", async (req: Request, resp: Response) => {
+  const r = await findProxLate()
+  
+  resp.send(r)
+})
+
 endpoints.get("/orders/:id", async (req: Request, resp: Response) => {
   const id = req.params.id
 
@@ -27,6 +48,5 @@ endpoints.get("/orders/:id", async (req: Request, resp: Response) => {
 
   resp.send(r)
 })
-
 
 export default endpoints;
