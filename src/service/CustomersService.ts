@@ -1,13 +1,11 @@
 import { PrismaClient } from "@prisma/client"
-import { validPagination } from "../validation/customers/validPagination"
 import { convertPagination } from "../util/convertPagination"
 
 const prisma = new PrismaClient()
 
-const findAllCustomers = async (page: any, limit: any) => {
+const findAllCustomers = async (page: number, limit: number) => {
   const pagination = convertPagination(page, limit)
 
-  validPagination(pagination.page, pagination.limit )
   
   const items = await prisma.customers.findMany(
     {

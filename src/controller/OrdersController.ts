@@ -6,7 +6,7 @@ const endpoints = Router();
 endpoints.get("/orders", async (req: Request, resp: Response) => {
   const {page, limit} = req.query
   
-  const r = await findAllOrders(page, limit)
+  const r = await findAllOrders(Number(page), Number(limit))
 
   resp.send(r)
 })
@@ -15,7 +15,7 @@ endpoints.get("/orders", async (req: Request, resp: Response) => {
 endpoints.get("/orders/late", async (req: Request, resp: Response) => {
   const {page, limit} = req.query  
   
-  const r = await findDelayedOrders(page, limit)
+  const r = await findDelayedOrders(Number(page), Number(limit))
 
   resp.send(r)
 })

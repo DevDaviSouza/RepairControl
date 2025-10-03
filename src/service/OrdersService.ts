@@ -1,20 +1,13 @@
 import { PrismaClient } from "@prisma/client"
 import { convertPagination } from "../util/convertPagination"
-import { paginationSchema, validPagination } from "../validation/customers/validPagination"
-import { log } from "console"
+import { paginationSchema } from "../validation/customers/validPagination"
 
 const prisma = new PrismaClient()
 
 //listar todas as ordens
-const findAllOrders = async (page: any, limit: any) => {
-  const paginationParse = {
-    page: page,
-    limit: limit
-  }
+const findAllOrders = async (page: number, limit: number) => {
   
-  const newPaginationParse = paginationSchema.parse(paginationParse)
-  
-  const pagination = convertPagination(newPaginationParse.page, newPaginationParse.limit)
+  const pagination = convertPagination(page, limit)
   
   const items = await prisma.orders.findMany(
     {
@@ -68,11 +61,11 @@ const findDelayedOrdersCount = async () => {
 }
 
 //listar todas as ordens atrasadas com paginação
-const findDelayedOrders = async (page: any, limit: any) => {
-  const today = new Date()
+const findDelayedOrders = async (page: number, limit: number) => {
 
   const pagination = convertPagination(page, limit)
-  validPagination(pagination.page, pagination.limit)
+
+  const today = new Date()
   
   const orders = await prisma.orders.findMany({
     where: {
@@ -94,7 +87,7 @@ const findDelayedOrders = async (page: any, limit: any) => {
     },
 })
 
-  const totalItems = findDelayedOrdersCount()
+  const totalItems = await findDelayedOrdersCount()
 
   return {
     items: orders,

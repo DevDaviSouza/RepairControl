@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import { createCustomer, deleteCustomer, findAllCustomers, findCustomerForId, updateCustomer } from "../service/CustomersService";
-import z from "zod";
+import z, { number } from "zod";
 import { customerSchema } from "../validation/customers/validData";
 
 const endpoints = Router();
@@ -9,7 +9,7 @@ endpoints.get("/customers", async (req: Request, resp: Response) => {
   
   const {page, limit} = req.query
 
-  const r = await findAllCustomers(page, limit)
+  const r = await findAllCustomers(Number(page), Number(limit))
   
   resp.send(r)
 })
