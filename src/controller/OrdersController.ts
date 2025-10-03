@@ -11,7 +11,6 @@ endpoints.get("/orders", async (req: Request, resp: Response) => {
   resp.send(r)
 })
 
-
 endpoints.get("/orders/late", async (req: Request, resp: Response) => {
   const {page, limit} = req.query  
   
@@ -27,7 +26,6 @@ endpoints.get("/orders/late/count", async (req: Request, resp: Response) => {
     total: r
   })
 })
-
 
 endpoints.get("/orders/pendingPainting", async (req: Request, resp: Response) => {
   const r = await findPendingPainting()
@@ -54,4 +52,5 @@ endpoints.get("/orders/:id", async (req: Request, resp: Response) => {
 
   resp.send(r)
 })
+
 export default endpoints;

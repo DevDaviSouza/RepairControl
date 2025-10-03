@@ -2,9 +2,10 @@
   "name": "node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.ts",
   "scripts": {
-    "start": "npm run build && node dist/index.js",
+    "build": "tsc",
+    "start": "npm run build && node src/app.ts",
     "dev": "nodemon --watch src -e ts --exec \"npx ts-node src/app.ts\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,7 +17,6 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
     "zod": "^4.1.11"

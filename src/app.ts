@@ -13,6 +13,6 @@ servidor.use(express.json());
 
 addRoutes(servidor);
 
-servidor.listen(process.env.PORT_SERVER? process.env.PORT_SERVER : 8081, () => {
+servidor.listen(process.env.PORT_SERVER? process.env.PORT_SERVER : 3000, () => {
   console.log(`Servidor rodando na porta ${process.env.PORT_SERVER}`)
 })
