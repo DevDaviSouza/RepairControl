@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { convertPagination } from "../util/convertPagination"
+import { customerSchema } from "../validation/validData"
 
 const prisma = new PrismaClient()
 
@@ -34,9 +35,11 @@ const findCustomerForId = async (id: number) => {
 
 const createCustomer = async (customer: any) => {
 
+  const dataParsed = customerSchema.parse(customer)
+
   const existsCustomerVerify = await prisma.customers.findFirst({
     where: {
-       nm_cpf: customer.cpf
+       nm_cpf: dataParsed.cpf
     }
   })
 
@@ -44,10 +47,10 @@ const createCustomer = async (customer: any) => {
 
    const clienteCadastrado = await prisma.customers.create({
     data: {
-      nm_customer: customer.name,
-      ds_phone: customer.phone,
-      ds_mail: customer.email,
-      nm_cpf: customer.cpf
+      nm_customer: dataParsed.name,
+      ds_phone: dataParsed.phone,
+      ds_mail: dataParsed.email,
+      nm_cpf: dataParsed.cpf
     }
   })
   return {
@@ -58,9 +61,11 @@ const createCustomer = async (customer: any) => {
 
 const updateCustomer = async (id: number, customer: any) => {
 
+  const dataParsed = customerSchema.parse(customer)
+
     const existsCustomerVerify = await prisma.customers.findFirst({
       where: {
-        nm_cpf: customer.cpf
+        nm_cpf: dataParsed.cpf
       }
     })
 
@@ -71,10 +76,10 @@ const updateCustomer = async (id: number, customer: any) => {
         customers_id: id
       },
       data: {
-        nm_customer: customer.name,
-        ds_phone: customer.phone,
-        ds_mail: customer.email,
-        nm_cpf: customer.cpf
+        nm_customer: dataParsed.name,
+        ds_phone: dataParsed.phone,
+        ds_mail: dataParsed.email,
+        nm_cpf: dataParsed.cpf
       }
     })
 

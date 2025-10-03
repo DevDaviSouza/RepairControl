@@ -1,4 +1,4 @@
-import { paginationSchema } from "../validation/customers/validPagination"
+import { paginationSchema } from "../validation/validPagination"
 
 export const convertPagination = (page: any, limit: any) => {
   const paginationParse = {

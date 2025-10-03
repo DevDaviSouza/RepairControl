@@ -1,7 +1,5 @@
 import { Request, Response, Router } from "express";
 import { createCustomer, deleteCustomer, findAllCustomers, findCustomerForId, updateCustomer } from "../service/CustomersService";
-import z, { number } from "zod";
-import { customerSchema } from "../validation/customers/validData";
 
 const endpoints = Router();
 
@@ -32,9 +30,7 @@ endpoints.post("/customers", async (req: Request, resp: Response) => {
     cpf: customer.cpf
   }
 
-  const dataParsed = customerSchema.parse(newUser)
-
-  const r = await createCustomer(dataParsed)
+  const r = await createCustomer(newUser)
 
   resp.send(r)
 })
@@ -50,9 +46,9 @@ endpoints.put("/customers/:id", async (req: Request, resp: Response) => {
     cpf: customer.cpf
   }
 
-  const dataParsed = customerSchema.parse(dataCustomer)
+
   
-  const r = await updateCustomer(Number(id), dataParsed)
+  const r = await updateCustomer(Number(id), dataCustomer)
   resp.send(r)
 })
 
