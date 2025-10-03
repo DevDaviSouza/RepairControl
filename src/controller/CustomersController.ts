@@ -1,15 +1,9 @@
 import { Request, Response, Router } from "express";
 import { createCustomer, deleteCustomer, findAllCustomers, findCustomerForId, updateCustomer } from "../service/CustomersService";
 import z from "zod";
+import { customerSchema } from "../validation/customers/validData";
 
 const endpoints = Router();
-
-const customerSchema = z.object({
-  name: z.string().min(3),
-  phone: z.string().min(8).max(19),
-  email: z.email(),
-  cpf: z.string().min(11).max(14)
-})
 
 endpoints.get("/customers", async (req: Request, resp: Response) => {
   

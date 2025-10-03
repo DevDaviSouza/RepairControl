@@ -1,16 +1,21 @@
 import { PrismaClient } from "@prisma/client"
 import { convertPagination } from "../util/convertPagination"
-import { validPagination } from "../validation/customers/validPagination"
+import { paginationSchema, validPagination } from "../validation/customers/validPagination"
 import { log } from "console"
 
 const prisma = new PrismaClient()
 
 //listar todas as ordens
 const findAllOrders = async (page: any, limit: any) => {
-  const pagination = convertPagination(page, limit)
+  const paginationParse = {
+    page: page,
+    limit: limit
+  }
   
-  validPagination(pagination.page, pagination.limit)
-
+  const newPaginationParse = paginationSchema.parse(paginationParse)
+  
+  const pagination = convertPagination(newPaginationParse.page, newPaginationParse.limit)
+  
   const items = await prisma.orders.findMany(
     {
       skip: pagination.page,
