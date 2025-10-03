@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { findAllOrders, findDelayedOrders, findDelayedOrdersCount, findOrderForId, findPendingPainting, findProxLate } from "../service/OrdersService";
+import { findAllOrders, findDelayedOrders, findDelayedOrdersCount, findDeliveryItems, findOrderForId, findPendingPainting, findProxLate } from "../service/OrdersService";
 
 const endpoints = Router();
 
@@ -41,6 +41,12 @@ endpoints.get("/orders/proxLate", async (req: Request, resp: Response) => {
   resp.send(r)
 })
 
+endpoints.get("/orders/deliveryItems", async (req: Request, resp: Response) => {
+  const r = await findDeliveryItems()
+  
+  resp.send(r)
+})
+
 endpoints.get("/orders/:id", async (req: Request, resp: Response) => {
   const id = req.params.id
 
@@ -48,5 +54,4 @@ endpoints.get("/orders/:id", async (req: Request, resp: Response) => {
 
   resp.send(r)
 })
-
 export default endpoints;

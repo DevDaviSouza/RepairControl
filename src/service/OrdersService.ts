@@ -120,6 +120,7 @@ const findPendingPainting = async () => {
   return qtdPainting + qtdRepair
 }
 
+//listar todas ar ordens proximas de expirar
 const findProxLate = async () => {
   const today = new Date()
 
@@ -142,11 +143,48 @@ const findProxLate = async () => {
   return orders
 }
 
+//listar quantidade de peças feitas no mês
+const findDeliveryItems = async () => {
+  const today = new Date()
+  const lastDate = new Date(today)
+  const qtdDays = (today.getDate() - 1)
+
+  lastDate.setDate(today.getDate() - qtdDays)
+
+  const orders = await prisma.orders.findMany({
+    where: {
+      AND: [
+        {
+        dt_delivered: { gt: lastDate }
+        },
+        {
+          bt_delivered: { equals: true }
+        }
+      ]
+    },
+    select: {
+      qtd_repair: true,
+      qtd_painting: true
+    }
+  })
+
+  let qtdRepair = 0
+  let qtdPainting = 0
+  
+  for(const order of orders) {
+    qtdRepair += order.qtd_repair ?? 0
+    qtdPainting += order.qtd_painting ?? 0
+  }
+
+  return qtdPainting + qtdRepair
+}
+
 export {
   findAllOrders,
   findOrderForId,
   findDelayedOrders,
   findDelayedOrdersCount,
   findPendingPainting,
-  findProxLate
+  findProxLate,
+  findDeliveryItems
 }
