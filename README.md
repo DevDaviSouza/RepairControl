@@ -134,45 +134,6 @@ Enum: `BAIXA`, `MEDIA`, `ALTA`
 #### **statusOrder** (Status das Ordens)
 Enum: `RECEBIDO`, `ORCAMENTO`, `APROVADO`, `ANDAMENTO`, `AGUARDANDO_PECA`, `FINALIZADO`, `ENTREGUE`
 
-## 🛣️ Rotas da API
-
-### Clientes
-```
-GET    /api/customers          # Lista todos os clientes
-GET    /api/customers/:id      # Busca cliente por ID
-POST   /api/customers          # Cria novo cliente
-PUT    /api/customers/:id      # Atualiza cliente
-DELETE /api/customers/:id      # Remove cliente
-```
-
-### Ordens de Serviço
-```
-GET    /api/orders             # Lista todas as ordens
-GET    /api/orders/:id         # Busca ordem por ID
-POST   /api/orders             # Cria nova ordem
-PUT    /api/orders/:id         # Atualiza ordem
-PATCH  /api/orders/:id/status  # Atualiza status da ordem
-DELETE /api/orders/:id         # Remove ordem
-```
-
-### Empresas
-```
-GET    /api/enterprises        # Lista todas as empresas
-GET    /api/enterprises/:id    # Busca empresa por ID
-POST   /api/enterprises        # Cria nova empresa
-PUT    /api/enterprises/:id    # Atualiza empresa
-DELETE /api/enterprises/:id    # Remove empresa
-```
-
-### Pagamentos
-```
-GET    /api/payments           # Lista todos os pagamentos
-GET    /api/payments/:id       # Busca pagamento por ID
-POST   /api/payments           # Registra novo pagamento
-PUT    /api/payments/:id       # Atualiza pagamento
-DELETE /api/payments/:id       # Remove pagamento
-```
-
 ## 🏗️ Arquitetura
 
 O projeto segue uma arquitetura em camadas, promovendo separação de responsabilidades e facilitando manutenção:
