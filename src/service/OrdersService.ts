@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import { convertPagination } from "../util/convertPagination"
+import { orderSchema } from "../validation/orders/validData"
+import { convertBodyOrder } from "../util/converBodyOrder"
 
 const prisma = new PrismaClient()
 
@@ -176,6 +178,37 @@ const findDeliveryItems = async () => {
   return qtdPainting + qtdRepair
 }
 
+const createOrder = async (order: any) => {
+  const convertOrder = convertBodyOrder(order)
+  
+  const dataParsed = orderSchema.parse(convertOrder)
+
+  console.log(dataParsed);
+
+  const newOrder = await prisma.orders.create({
+    data: {
+      customer_id: dataParsed.customerId,
+      ds_model: dataParsed.dsModel,
+      ds_color: dataParsed.dsColor,
+      dt_year: dataParsed.dtYear,
+      ds_plate: dataParsed.dsPlate,
+      qtd_repair: dataParsed.qtdRepair,
+      qtd_painting: dataParsed.qtdPainting,
+      dt_order: dataParsed.dtOrder,
+      dt_completion: dataParsed.dtCompletion,
+      ds_services: dataParsed.dsServices,
+      priority_id: dataParsed.priorityId,
+      vl_total: dataParsed.vlTotal,
+      enterprise_id: dataParsed.enterpriseId
+    }
+  })
+
+  return {
+    message: "Ordem de serviço criada com sucesso",
+    id: newOrder.order_id
+  }
+}
+
 export {
   findAllOrders,
   findOrderForId,
@@ -183,5 +216,6 @@ export {
   findDelayedOrdersCount,
   findPendingPainting,
   findProxLate,
-  findDeliveryItems
+  findDeliveryItems,
+  createOrder
 }

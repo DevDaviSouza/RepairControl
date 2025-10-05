@@ -60,7 +60,7 @@ model orders {
   dt_delivered  DateTime?    @db.Timestamp(6)
   bt_delivered  Boolean?
   ds_services   String?
-  status_id     Int?
+  status_id     Int?  @default(1)
   status        statusOrder? @relation(fields: [status_id], references: [status_id], onDelete: NoAction, onUpdate: NoAction)
   priority_id   Int?
   vl_total      Decimal?     @db.Decimal

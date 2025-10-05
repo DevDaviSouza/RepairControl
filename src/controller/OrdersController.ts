@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
-import { findAllOrders, findDelayedOrders, findDelayedOrdersCount, findDeliveryItems, findOrderForId, findPendingPainting, findProxLate } from "../service/OrdersService";
+import { createOrder, findAllOrders, findDelayedOrders, findDelayedOrdersCount, findDeliveryItems, findOrderForId, findPendingPainting, findProxLate } from "../service/OrdersService";
+import { Prisma } from "@prisma/client";
 
 const endpoints = Router();
 
@@ -49,6 +50,14 @@ endpoints.get("/orders/:id", async (req: Request, resp: Response) => {
   const id = req.params.id
 
    const r = await findOrderForId(Number(id))
+
+  resp.send(r)
+})
+
+endpoints.post("/orders", async (req: Request, resp: Response) => {
+  const order = req.body
+
+  const r = await createOrder(order)
 
   resp.send(r)
 })

@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { convertPagination } from "../util/convertPagination"
-import { customerSchema } from "../validation/validData"
+import { customerSchema } from "../validation/customers/validData"
 
 const prisma = new PrismaClient()
 
