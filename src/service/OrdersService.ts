@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client"
 import { convertPagination } from "../util/convertPagination"
 import { orderSchema } from "../validation/orders/validData"
 import { convertBodyOrder } from "../util/converBodyOrder"
+import { validStatus } from "../validation/orders/validStatus"
+import z from "zod"
 
 const prisma = new PrismaClient()
 
@@ -183,9 +185,7 @@ const createOrder = async (order: any) => {
   
   const dataParsed = orderSchema.parse(convertOrder)
 
-  console.log(dataParsed);
-
-  const newOrder = await prisma.orders.create({
+  await prisma.orders.create({
     data: {
       customer_id: dataParsed.customerId,
       ds_model: dataParsed.dsModel,
@@ -202,11 +202,127 @@ const createOrder = async (order: any) => {
       enterprise_id: dataParsed.enterpriseId
     }
   })
+}
+
+  const changeStatus = async (status: number, id: number) => {
+    const existsOrder = await findOrderForId(id)
+
+    if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
+
+    const validatedStatus = validStatus.parse({status})
+
+    await prisma.orders.update({
+      where: {
+        order_id: id
+      },
+      data: {
+        status_id: validatedStatus.status
+      }
+    })
+
+    if(validatedStatus.status === 7) {
+      await finalizeOrder(id)
+    }
+
+    const existsOrderAltered = await findOrderForId(id)
+
+    return {
+      message: "Status atualizado com sucesso",
+      order: existsOrderAltered
+    }
+}
+
+const finalizeOrder = async (id: number) => {
+  const today = new Date()
+
+  const dateNow = new Date(today)
+  dateNow.setHours(dateNow.getHours() - 3)
+
+  const existsOrder = await findOrderForId(id)
+  if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
+
+  const updatedOrder = await prisma.orders.update({
+    where: {
+      order_id: id
+    },
+    data: {
+      status_id: 7,
+      bt_delivered: true,
+      dt_delivered: dateNow
+    }
+  })
+  return {
+    message: "Ordem de serviço finalizada com sucesso",
+    order: updatedOrder
+  }
+}
+
+const newCompletionDate = async (id: number, dtCompletion: Date) => {
+  const today = new Date()
+  
+  const existsOrder = await findOrderForId(id)
+  if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
+  
+  z.date().min(today).parse(dtCompletion)
+  
+  const updatedOrder = await prisma.orders.update({
+    where: {
+      order_id: id
+    },
+    data: {
+      dt_completion: dtCompletion
+    }
+  })
 
   return {
-    message: "Ordem de serviço criada com sucesso",
-    id: newOrder.order_id
+    message: "Data de conclusão alterada com sucesso",
+    order: updatedOrder
   }
+}
+
+const alterOrder = async (order: any, id: number) => {
+  const convertOrder = convertBodyOrder(order)
+  const dataParsed = orderSchema.parse(convertOrder)
+  
+  const existsOrder = await findOrderForId(id)
+  if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
+
+  const updatedOrder = await prisma.orders.update({
+    where: {
+      order_id: id
+    },
+    data: {
+      customer_id: dataParsed.customerId,
+      ds_model: dataParsed.dsModel,
+      ds_color: dataParsed.dsColor,
+      dt_year: dataParsed.dtYear,
+      ds_plate: dataParsed.dsPlate,
+      qtd_repair: dataParsed.qtdRepair,
+      qtd_painting: dataParsed.qtdPainting,
+      dt_order: dataParsed.dtOrder,
+      dt_completion: dataParsed.dtCompletion,
+      ds_services: dataParsed.dsServices,
+      priority_id: dataParsed.priorityId,
+      vl_total: dataParsed.vlTotal,
+      enterprise_id: dataParsed.enterpriseId
+    }
+  })
+  return {
+    message: "Ordem de serviço alterada com sucesso",
+    order: updatedOrder
+  }
+}
+
+const deleteOrder = async (id: number) => {
+  const existsOrder = await findOrderForId(id)
+  if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
+
+  await prisma.orders.delete({
+    where: {
+      order_id: id
+    }
+  })
+  return {message: "Ordem de serviço deletada com sucesso"}
 }
 
 export {
@@ -217,5 +333,10 @@ export {
   findPendingPainting,
   findProxLate,
   findDeliveryItems,
-  createOrder
+  createOrder,
+  changeStatus,
+  finalizeOrder,
+  newCompletionDate,
+  alterOrder,
+  deleteOrder
 }
