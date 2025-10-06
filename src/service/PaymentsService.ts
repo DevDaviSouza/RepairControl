@@ -100,10 +100,7 @@ const createPayment = async (id: number, payment: number) => {
     
     const alterPayment = await editPayment(paymentExists.payment_id, validPayment)
 
-    return { 
-      message: "Pagamento alterado com sucesso", 
-      payment: alterPayment  
-    }
+    return { alterPayment }
   }
   
   const validPayment = z.float64().min(0.01, "Valor do pagamento deve ser maior que zero").max(Number(totalOrderValue)).parse(payment);
