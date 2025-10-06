@@ -3,7 +3,7 @@ import { convertPagination } from "../util/convertPagination"
 import { orderSchema } from "../validation/orders/validData"
 import { convertBodyOrder } from "../util/converBodyOrder"
 import { validStatus } from "../validation/orders/validStatus"
-import z from "zod"
+import { validCompletionDate } from "../validation/orders/validCompletionDate"
 
 const prisma = new PrismaClient()
 
@@ -180,6 +180,7 @@ const findDeliveryItems = async () => {
   return qtdPainting + qtdRepair
 }
 
+//criar uma ordem
 const createOrder = async (order: any) => {
   const convertOrder = convertBodyOrder(order)
   
@@ -204,6 +205,7 @@ const createOrder = async (order: any) => {
   })
 }
 
+//alterar status de uma ordem
   const changeStatus = async (status: number, id: number) => {
     const existsOrder = await findOrderForId(id)
 
@@ -232,6 +234,7 @@ const createOrder = async (order: any) => {
     }
 }
 
+//finalizar uma ordem
 const finalizeOrder = async (id: number) => {
   const today = new Date()
 
@@ -257,20 +260,20 @@ const finalizeOrder = async (id: number) => {
   }
 }
 
+//alterar data de conclusão
 const newCompletionDate = async (id: number, dtCompletion: Date) => {
-  const today = new Date()
   
   const existsOrder = await findOrderForId(id)
   if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
   
-  z.date().min(today).parse(dtCompletion)
+  const newDtCompletion = validCompletionDate.parse(dtCompletion)
   
   const updatedOrder = await prisma.orders.update({
     where: {
       order_id: id
     },
     data: {
-      dt_completion: dtCompletion
+      dt_completion: newDtCompletion.dtCompletion
     }
   })
 
@@ -280,6 +283,7 @@ const newCompletionDate = async (id: number, dtCompletion: Date) => {
   }
 }
 
+//alterar uma ordem
 const alterOrder = async (order: any, id: number) => {
   const convertOrder = convertBodyOrder(order)
   const dataParsed = orderSchema.parse(convertOrder)
@@ -313,6 +317,7 @@ const alterOrder = async (order: any, id: number) => {
   }
 }
 
+//deletar uma ordem
 const deleteOrder = async (id: number) => {
   const existsOrder = await findOrderForId(id)
   if(!existsOrder || !('order_id' in existsOrder)) return({message: "Ordem de serviço não encontrada"})
