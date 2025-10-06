@@ -5,6 +5,7 @@ import EnterPrisesController from './controller/EnterprisesController'
 import UsersController from './controller/UsersController'
 import OrdersController from './controller/OrdersController'
 import Status from './controller/StatusOrderController'
+import Payments from './controller/PaymentsController'
 
 export default function addRoutes(servidor: Express) {
   servidor.use(PriorityController)
@@ -13,4 +14,5 @@ export default function addRoutes(servidor: Express) {
   servidor.use(UsersController)
   servidor.use(OrdersController)
   servidor.use(Status)
+  servidor.use(Payments)
 }
