@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import { isValidValuePayment } from "../validation/payments/validValuePayment";
+import { isValidValueEditPayment, isValidValueNewPayment } from "../validation/payments/validValuePayment";
 import z from "zod";
-import { log } from "console";
 
 const prisma = new PrismaClient()
 
@@ -24,6 +23,7 @@ const findTotalPayments = async () => {
 
 const findPayments = async () => {
   const payments = await prisma.payments.findMany();
+  
   return payments;
 }
 
@@ -65,13 +65,11 @@ const findPaymentById = async (id: number) => {
 
 const editPayment = async (id: number, payment: any) => {
   const captureRemaining = await findPaymentById(id);
-  console.log("vl_payment", captureRemaining?.vl_payment);
   
   const currentPayment = Number(captureRemaining?.vl_payment ?? 0);
   const currentRemaining = Number(captureRemaining?.vl_reamining ?? 0);
   
   const validPayment: number = payment + currentPayment;
-  console.log("validPayment: " + validPayment);
 
   const paymentData = await prisma.payments.update({
     where: {
@@ -94,16 +92,13 @@ const createPayment = async (id: number, payment: number) => {
   const totalOrderValue = await findOrderValue(id);
   
   if (paymentExists) {
-    const validPayment = z.float64().min(0.01, "Valor do pagamento deve ser maior que zero").max(Number(paymentExists.vl_reamining), "valor digitado acima do permitido para esse pagamento").parse(payment);
-    console.log(paymentExists.vl_reamining);
-    console.log(validPayment);
-    
+    const validPayment = isValidValueEditPayment(payment, Number(paymentExists.vl_reamining));
     const alterPayment = await editPayment(paymentExists.payment_id, validPayment)
 
     return { alterPayment }
   }
   
-  const validPayment = z.float64().min(0.01, "Valor do pagamento deve ser maior que zero").max(Number(totalOrderValue)).parse(payment);
+  const validPayment = isValidValueNewPayment(payment, Number(totalOrderValue));
   const calcVlRemaining = Number(totalOrderValue) - Number(validPayment);
 
   const r = await prisma.payments.create({
@@ -124,6 +119,11 @@ const deletePayment = async (id: number) => {
       payment_id: id
     }
   })
+
+  return {
+    message: "Pagamento deletado com sucesso",
+    payment: r
+  }
 }
 
 export { findTotalPayments, createPayment, editPayment, deletePayment, findPayments };
