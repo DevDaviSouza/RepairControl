@@ -24,7 +24,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: repaircontrol_app
     restart: unless-stopped
     ports:

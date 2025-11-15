@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { isValidValueEditPayment, isValidValueNewPayment } from "../validation/payments/validValuePayment";
-import z from "zod";
 
 const prisma = new PrismaClient()
 
@@ -112,7 +111,6 @@ const createPayment = async (id: number, payment: number) => {
 
   return { message: "Pagamento criado com sucesso", payment: r}
 }
-
 const deletePayment = async (id: number) => {
   const r = await prisma.payments.delete({
     where: {
