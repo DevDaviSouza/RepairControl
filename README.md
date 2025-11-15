@@ -25,7 +25,6 @@ O RepairControl é uma solução tecnológica especializada que automatiza e org
 - **PostgreSQL** - Banco de dados relacional
 - **Zod** - Validação de schemas e tipagem em runtime
 - **CORS** - Controle de acesso entre origens
-- **Jest** - Framework de testes
 
 ## 📦 Pré-requisitos
 
@@ -999,14 +998,6 @@ Atualmente, o sistema não possui autenticação implementada. Recomenda-se impl
 4. **Validações**: Todos os dados de entrada são validados usando Zod. Erros de validação retornam status 400.
 
 5. **CORS**: O servidor está configurado para aceitar requisições de qualquer origem. Em produção, configure adequadamente.
-
-## 🧪 Testes
-
-Execute os testes com:
-
-```bash
-npm test
-```
 
 ## 🤝 Contribuindo
 
