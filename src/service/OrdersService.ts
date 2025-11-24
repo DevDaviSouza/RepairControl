@@ -108,14 +108,12 @@ const findPendingPainting = async () => {
   })
   
   let qtdPainting = 0
-  let qtdRepair = 0 
 
   for(const order of totalItems) {
      qtdPainting += order.qtd_painting ?? 0
-     qtdRepair += order.qtd_repair ?? 0
   }
 
-  return qtdPainting + qtdRepair
+  return qtdPainting
 }
 
 //listar todas ar ordens proximas de expirar
