@@ -51,11 +51,8 @@ const findDelayedOrdersCount = async () => {
         {
           dt_completion: { lt: today },
         },
-        { OR: [
-          {status_id: {not : 7 }},
-          {status_id: {not : 6 }}
-          ]
-       }
+        {
+          status_id: {notIn : [7, 6] }},
       ] 
     }
   })
